@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skibidi Popup with Minigame</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            font-size: 48px;
+            background-color: #f0f0f0;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .hidden {
+            display: none;
+        }
+        .game-container {
+            margin-top: 40px;
+            text-align: center;
+        }
+        .footer {
+            position: absolute;
+            bottom: 20px; /* Adjust this value as needed */
+            font-size: 20px; /* Change font size */
+            color: #555; /* Change text color */
+        }
+    </style>
+</head>
+<body>
+    <!-- Display the text "Skibidi" -->
+    <div>Skibidi</div>
+
+    <!-- Button to play audio -->
+    <button id="play-button">Play Music</button>
+    <!-- Button to speed up audio -->
+    <button id="speed-button">Speed Up Audio</button>
+
+    <!-- Audio element for background music -->
+    <audio id="background-audio" loop>
+        <source src="ahhmusic.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <!-- Minigame Section -->
+    <div class="game-container hidden" id="game-container">
+        <h2>Guess the Number (1-100)</h2>
+        <input type="number" id="guess-input" placeholder="Enter your guess" />
+        <button id="guess-button">Submit Guess</button>
+        <p id="feedback"></p>
+        <button id="restart-button" class="hidden">Restart Game</button>
+    </div>
+
+    <script>
+        // Event listener for the play button
+        document.getElementById('play-button').addEventListener('click', function() {
+            var audio = document.getElementById('background-audio');
+            audio.play().catch(function(error) {
+                console.error('Error playing audio:', error);
+                alert('Audio playback failed. Please check the audio file path and browser settings.');
+            });
+        });
+
+        // Event listener for the speed up button
+        document.getElementById('speed-button').addEventListener('click', function() {
+            var audio = document.getElementById('background-audio');
+            audio.playbackRate += 0.5; // Increase playback speed by 0.5
+            alert(`Playback speed increased to ${audio.playbackRate.toFixed(1)}x`);
+        });
+
+        // Minigame Logic
+        let randomNumber;
+        let attempts = 0;
+
+        function startGame() {
+            randomNumber = Math.floor(Math.random() * 100) + 1; // Random number between 1 and 100
+            attempts = 0;
+            document.getElementById('game-container').classList.remove('hidden');
+            document.getElementById('feedback').textContent = '';
+            document.getElementById('guess-input').value = '';
+            document.getElementById('restart-button').classList.add('hidden');
+        }
+
+        document.getElementById('guess-button').addEventListener('click', function() {
+            const guess = parseInt(document.getElementById('guess-input').value);
+            attempts++;
+            let feedback = '';
+
+            if (isNaN(guess) || guess < 1 || guess > 100) {
+                feedback = 'Please enter a number between 1 and 100.';
+            } else if (guess < randomNumber) {
+                feedback = 'Too low! Try again.';
+            } else if (guess > randomNumber) {
+                feedback = 'Too high! Try again.';
+            } else {
+                feedback = `Correct! You guessed the number in ${attempts} attempts.`;
+                document.getElementById('restart-button').classList.remove('hidden');
+            }
+
+            document.getElementById('feedback').textContent = feedback;
+        });
+
+        document.getElementById('restart-button').addEventListener('click', startGame);
+
+        // Start the game when the page loads
+        window.addEventListener('load', startGame);
+    </script>
+
+    <!-- Footer Text -->
+    <div class="footer">Made by ChatGPT</div>
+</body>
+</html>
